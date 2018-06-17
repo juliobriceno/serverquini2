@@ -378,6 +378,25 @@ app.post('/api/GetUsersGroups', function (req, res) {
       Data.result = 'ok';
       Data.UsersGroups = UsersGroups;
       Data.endedGames = result;
+
+      // Recorre cada juego finalizado
+      Data.endedGames.forEach(function(eachendedGame){
+        // Recorre cada usuario igual al de la sessión en su dummy games
+        Data.UsersGroups.forEach(function(eachUser){
+          // Si el usuario es el mismo al de la sesión
+          if (eachUser.Email == req.session.User.Email){
+            // Recorre cada dummy game del usuario activo
+            eachUser.DummyGames.forEach(function(eachUserDummyGames){
+              if (eachUserDummyGames.game == eachendedGame.game){
+                eachUserDummyGames.isEnded = true;
+                eachUserDummyGames.homegoal = eachendedGame.homegoal;
+                eachUserDummyGames.visitorgoal = eachendedGame.visitorgoal;
+              }
+            })
+          }
+        })
+      })
+
       res.end(JSON.stringify(Data));
     });
   }
